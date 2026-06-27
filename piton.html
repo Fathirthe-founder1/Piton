@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Piton IDE</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #0d1117;
+    color: #e0e0e0;
+    text-align: center;
+    font-family: monospace;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #f1c40f;
+    color: #f1c40f;
+    margin-bottom: 10px;
+    font-family: monospace;
+}
+
+.sub {
+    color: #3498db;
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-family: monospace;
+}
+
+.editor-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 8px;
+    border: 1px solid #333;
+    overflow: hidden;
+    background: #0d1117;
+}
+
+.CodeMirror {
+    height: 250px;
+    font-family: monospace;
+    text-align: left;
+    background: #0d1117 !important;
+    font-size: 15px;
+    line-height: 1.2;
+}
+
+.CodeMirror-activeline-background {
+    background: transparent !important;
+}
+
+.CodeMirror-activeline {
+    background: transparent !important;
+}
+
+.CodeMirror-focused .CodeMirror-activeline-background {
+    background: transparent !important;
+}
+
+.CodeMirror-gutters {
+    background-color: #0d1117 !important;
+    border-right: none !important;
+    width: 45px !important;
+    min-width: 45px !important;
+    z-index: 3;
+    position: relative;
+}
+
+.CodeMirror-gutters::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #444;
+    z-index: 4;
+}
+
+.CodeMirror-linenumber {
+    padding: 0 10px 0 8px !important;
+    text-align: right;
+    color: #888888;
+    font-size: 14px;
+    line-height: inherit !important;
+    min-width: 20px;
+}
+
+.CodeMirror-line {
+    padding-left: 15px !important;
+}
+
+.CodeMirror-line > span {
+    padding-left: 0 !important;
+}
+
+pre {
+    background: #0d1117;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    width: 90%;
+    max-width: 800px;
+    text-align: left;
+    font-family: monospace;
+    color: #f1fa8c;
+    border: 1px solid #333;
+    min-height: 50px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 35px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #f1c40f;
+    color: #0d1117;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);
+    font-family: monospace;
+}
+
+button:hover {
+    background: #f39c12;
+    transform: scale(1.02);
+}
+
+.table-container {
+    width: 90%;
+    max-width: 800px;
+    margin-top: 25px;
+    background: #161b22;
+    border-radius: 8px;
+    border: 1px solid #333;
+    padding: 15px;
+    text-align: left;
+}
+
+.table-container h3 {
+    color: #f1c40f;
+    margin-bottom: 15px;
+    font-family: monospace;
+    text-align: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+th {
+    background: #21262d;
+    color: #f1fa8c;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #444;
+}
+
+td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #2d333b;
+    color: #c9d1d9;
+}
+
+/* Warna kolom Piton (Merah muda) */
+td:nth-child(2) {
+    color: #ff79c6;
+    font-weight: bold;
+}
+
+/* Warna kolom Python (Hijau) */
+td:nth-child(3) {
+    color: #50fa7b;
+}
+
+tr:hover {
+    background: #1c2128;
+}
+
+@media (max-width: 600px) {
+    .CodeMirror {
+        height: 200px;
+        font-size: 13px;
+    }
+
+    pre, table {
+        font-size: 12px;
+    }
+
+    table td, table th {
+        padding: 6px;
+    }
+}
+</style>
+</head>
+<body>
+
+<h2>𓆙Piton Archetype</h2>
+<div class="sub">Bahasa Pemrograman Indonesia 🇮🇩</div>
+
+<div class="editor-container">
+    <textarea id="code">ketik("selamat menulis")</textarea>
+</div>
+
+<button onclick="runPiton()">🚀 Jalankan</button>
+<pre id="output">⏳ Tunggu sebentar...</pre>
+
+<div class="table-container">
+    <h3>📖 Kamus Piton → Python</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Kategori</th>
+                <th>Piton</th>
+                <th>Python</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+</div>
+
+<script>
+const KAMUS_TABEL = [
+    { kategori: "Input / Output", piton: "ketik", python: "print" },
+    { kategori: "Input / Output", piton: "terima", python: "input" },
+    { kategori: "Input / Output", piton: "buka", python: "open" },
+    { kategori: "Input / Output", piton: "tutup", python: "close" },
+    { kategori: "Input / Output", piton: "baca", python: "read" },
+    { kategori: "Input / Output", piton: "tulis_file", python: "write" },
+    
+    { kategori: "Fungsi & Kelas", piton: "buat", python: "def" },
+    { kategori: "Fungsi & Kelas", piton: "kembalikan", python: "return" },
+    { kategori: "Fungsi & Kelas", piton: "wadah", python: "class" },
+    { kategori: "Fungsi & Kelas", piton: "anon", python: "lambda" },
+    { kategori: "Fungsi & Kelas", piton: "serahkan", python: "yield" },
+    
+    { kategori: "Logika", piton: "jika", python: "if" },
+    { kategori: "Logika", piton: "jikalau", python: "elif" },
+    { kategori: "Logika", piton: "selain", python: "else" },
+    { kategori: "Logika", piton: "pasti", python: "assert" },
+    
+    { kategori: "Perulangan", piton: "putar", python: "while" },
+    { kategori: "Perulangan", piton: "ulangi", python: "for" },
+    { kategori: "Perulangan", piton: "henti", python: "break" },
+    { kategori: "Perulangan", piton: "lanjut", python: "continue" },
+    { kategori: "Perulangan", piton: "lewat", python: "pass" },
+    
+    { kategori: "Tipe Data", piton: "teks", python: "str" },
+    { kategori: "Tipe Data", piton: "bilangan", python: "int" },
+    { kategori: "Tipe Data", piton: "desimal", python: "float" },
+    { kategori: "Tipe Data", piton: "logika", python: "bool" },
+    { kategori: "Tipe Data", piton: "daftar", python: "list" },
+    { kategori: "Tipe Data", piton: "kamus", python: "dict" },
+    { kategori: "Tipe Data", piton: "panjang", python: "len" },
+    { kategori: "Tipe Data", piton: "jenis", python: "type" },
+    { kategori: "Tipe Data", piton: "rentang", python: "range" },
+    
+    { kategori: "Boolean", piton: "BENAR", python: "True" },
+    { kategori: "Boolean", piton: "SALAH", python: "False" },
+    { kategori: "Boolean", piton: "KOSONG", python: "None" },
+    
+    { kategori: "Operator", piton: "dan", python: "and" },
+    { kategori: "Operator", piton: "atau", python: "or" },
+    { kategori: "Operator", piton: "bukan", python: "not" },
+    { kategori: "Operator", piton: "dalam", python: "in" },
+    { kategori: "Operator", piton: "adalah", python: "is" },
+    
+    { kategori: "Modul", piton: "ambil", python: "import" },
+    { kategori: "Modul", piton: "dari", python: "from" },
+    { kategori: "Modul", piton: "sebagai", python: "as" },
+    
+    { kategori: "Error", piton: "coba", python: "try" },
+    { kategori: "Error", piton: "tangkapi", python: "except" },
+    { kategori: "Error", piton: "bersihkan", python: "finally" },
+    { kategori: "Error", piton: "lontar", python: "raise" },
+    
+    { kategori: "Variabel", piton: "umum", python: "global" },
+    { kategori: "Variabel", piton: "lokal", python: "nonlocal" },
+    { kategori: "Variabel", piton: "hapus", python: "del" },
+    
+    { kategori: "Math", piton: "maks", python: "max" },
+    { kategori: "Math", piton: "min", python: "min" },
+    { kategori: "Math", piton: "total", python: "sum" },
+    { kategori: "Math", piton: "urut", python: "sorted" },
+    
+    { kategori: "Special", piton: "__nama__", python: "__name__" },
+    { kategori: "Special", piton: "__utama__", python: "__main__" }
+];
+
+const tbody = document.getElementById('table-body');
+
+KAMUS_TABEL.forEach(item => {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${item.kategori}</td><td>${item.piton}</td><td>${item.python}</td>`;
+    tbody.appendChild(row);
+});
+
+const MAP_IO = { 'ketik': 'print', 'terima': 'input', 'buka': 'open', 'tutup': 'close', 'baca': 'read', 'tulis_file': 'write' };
+const MAP_FUNC = { 'buat': 'def', 'kembalikan': 'return', 'wadah': 'class', 'anon': 'lambda', 'serahkan': 'yield' };
+const MAP_LOGIC = { 'jika': 'if', 'jikalau': 'elif', 'selain': 'else', 'pasti': 'assert' };
+const MAP_LOOP = { 'putar': 'while', 'ulangi': 'for', 'henti': 'break', 'lanjut': 'continue', 'lewat': 'pass' };
+const MAP_TYPES = { 'teks': 'str', 'bilangan': 'int', 'desimal': 'float', 'logika': 'bool', 'daftar': 'list', 'kamus': 'dict', 'panjang': 'len', 'jenis': 'type', 'rentang': 'range' };
+const MAP_BOOL = { 'BENAR': 'True', 'SALAH': 'False', 'KOSONG': 'None' };
+const MAP_OP = { 'dan': 'and', 'atau': 'or', 'bukan': 'not', 'dalam': 'in', 'adalah': 'is' };
+const MAP_IMPORT = { 'ambil': 'import', 'dari': 'from', 'sebagai': 'as' };
+const MAP_ERROR = { 'coba': 'try', 'tangkapi': 'except', 'bersihkan': 'finally', 'lontar': 'raise' };
+const MAP_SCOPE = { 'umum': 'global', 'lokal': 'nonlocal', 'hapus': 'del' };
+const MAP_MATH = { 'maks': 'max', 'min': 'min', 'total': 'sum', 'urut': 'sorted' };
+const MAP_SPECIAL = { '__nama__': '__name__', '__utama__': '__main__' };
+const MAP = { ...MAP_IO, ...MAP_FUNC, ...MAP_LOGIC, ...MAP_LOOP, ...MAP_TYPES, ...MAP_BOOL, ...MAP_OP, ...MAP_IMPORT, ...MAP_ERROR, ...MAP_SCOPE, ...MAP_MATH, ...MAP_SPECIAL };
+
+let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    mode: "python",
+    theme: "material-darker",
+    lineNumbers: true,
+    indentUnit: 4,
+    matchBrackets: true
+});
+
+editor.setValue(`ketik("selamat menulis")`);
+
+function ubahPitonKePython(kode) {
+    let strings = [];
+    let i = 0;
+
+    kode = kode.replace(/"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'/g, function(match) {
+        strings.push(match);
+        return `__STR${i++}__`;
+    });
+
+    const sortedKeys = Object.keys(MAP).sort((a, b) => b.length - a.length);
+
+    for (let kata of sortedKeys) {
+        const regex = new RegExp('\\b' + kata.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g');
+        kode = kode.replace(regex, MAP[kata]);
+    }
+
+    for (let j = 0; j < strings.length; j++) {
+        kode = kode.replace(`__STR${j}__`, strings[j]);
+    }
+
+    return kode;
+}
+
+let pyodide = null;
+
+setTimeout(async () => {
+    pyodide = await loadPyodide();
+    document.getElementById("output").textContent = "✅ Piton Siap!";
+}, 1000);
+
+async function runPiton() {
+    let output = document.getElementById("output");
+
+    if (!pyodide) {
+        output.textContent = "⏳ Piton masih loading... (1 detik)";
+        return;
+    }
+
+    output.textContent = "⏳ Menjalankan...";
+
+    let kodePiton = editor.getValue();
+    let kodePython = ubahPitonKePython(kodePiton);
+
+    try {
+        pyodide.runPython(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+        `);
+
+        pyodide.runPython(kodePython);
+
+        let hasil = pyodide.runPython("sys.stdout.getvalue()") || "✔️ Selesai";
+
+        output.textContent = hasil;
+    } catch (e) {
+        output.textContent = "❌ ERROR:\n" + e.toString();
+    }
+}
+</script>
+</body>
+</html>

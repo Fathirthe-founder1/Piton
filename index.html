@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Piton IDE</title>
+<title>Piton IDE - Compiler Python Indonesia</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
@@ -18,233 +18,449 @@
     padding: 0;
 }
 
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
-    background: #0d1117;
-    color: #e0e0e0;
-    text-align: center;
-    font-family: monospace;
-    padding: 20px;
-    min-height: 100vh;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
+}
+
+/* Header */
+header {
+    background: #252526;
+    border-bottom: 1px solid #3e3e42;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.header-title .logo {
+    font-size: 20px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
     align-items: center;
 }
 
-h2 {
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px #f1c40f;
-    color: #f1c40f;
-    margin-bottom: 10px;
-    font-family: monospace;
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #2d2d30;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #4ec9b0;
 }
 
-.sub {
-    color: #3498db;
-    font-size: 14px;
-    margin-bottom: 20px;
-    font-family: monospace;
+.status-indicator.loading {
+    color: #ce9178;
+}
+
+.status-indicator.error {
+    color: #f48771;
+}
+
+.status-indicator .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Main Container */
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background: #252526;
+    border-right: 1px solid #3e3e42;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-section {
+    border-bottom: 1px solid #3e3e42;
+}
+
+.sidebar-header {
+    padding: 12px 15px;
+    background: #2d2d30;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-content {
+    overflow-y: auto;
+    flex: 1;
+    padding: 10px 0;
+}
+
+.kamus-item {
+    padding: 8px 15px;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kamus-item:hover {
+    background: #2d2d30;
+    border-left-color: #007acc;
+}
+
+.kamus-piton {
+    color: #9cdcfe;
+    font-weight: 600;
+}
+
+.kamus-python {
+    color: #6a9955;
+    font-size: 12px;
+}
+
+/* Editor Area */
+.editor-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.editor-tabs {
+    display: flex;
+    background: #1e1e1e;
+    border-bottom: 1px solid #3e3e42;
+    height: 40px;
+}
+
+.editor-tab {
+    padding: 0 15px;
+    border: none;
+    background: transparent;
+    color: #858585;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.editor-tab.active {
+    color: #ffffff;
+    border-bottom-color: #007acc;
+    background: #252526;
+}
+
+.editor-tab:hover {
+    background: #2d2d30;
 }
 
 .editor-container {
-    width: 90%;
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: 8px;
-    border: 1px solid #333;
+    flex: 1;
+    display: flex;
     overflow: hidden;
-    background: #0d1117;
+    background: #1e1e1e;
 }
 
 .CodeMirror {
-    height: 250px;
-    font-family: monospace;
-    text-align: left;
-    background: #0d1117 !important;
-    font-size: 15px;
-    line-height: 1.2;
+    flex: 1 !important;
+    height: auto !important;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    background: #1e1e1e !important;
 }
 
-.CodeMirror-activeline-background {
-    background: transparent !important;
-}
-
-.CodeMirror-activeline {
-    background: transparent !important;
-}
-
-.CodeMirror-focused .CodeMirror-activeline-background {
-    background: transparent !important;
+.CodeMirror-scrollbar-filler {
+    background: #1e1e1e !important;
 }
 
 .CodeMirror-gutters {
-    background-color: #0d1117 !important;
-    border-right: none !important;
-    width: 45px !important;
-    min-width: 45px !important;
-    z-index: 3;
-    position: relative;
-}
-
-.CodeMirror-gutters::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background-color: #444;
-    z-index: 4;
+    background: #1e1e1e !important;
+    border-right: 1px solid #3e3e42 !important;
 }
 
 .CodeMirror-linenumber {
-    padding: 0 10px 0 8px !important;
-    text-align: right;
-    color: #888888;
-    font-size: 14px;
-    line-height: inherit !important;
-    min-width: 20px;
+    color: #858585 !important;
+    padding-right: 15px !important;
 }
 
 .CodeMirror-line {
-    padding-left: 15px !important;
+    padding-left: 10px !important;
 }
 
-.CodeMirror-line > span {
-    padding-left: 0 !important;
+/* Output Panel */
+.output-container {
+    background: #1e1e1e;
+    border-top: 1px solid #3e3e42;
+    display: flex;
+    flex-direction: column;
+    max-height: 280px;
+    min-height: 150px;
 }
 
-pre {
-    background: #0d1117;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 15px;
-    width: 90%;
-    max-width: 800px;
-    text-align: left;
-    font-family: monospace;
-    color: #f1fa8c;
-    border: 1px solid #333;
-    min-height: 50px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+.output-header {
+    padding: 10px 15px;
+    background: #252526;
+    border-bottom: 1px solid #3e3e42;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #ffffff;
 }
 
-button {
-    margin-top: 20px;
-    padding: 12px 35px;
-    font-size: 16px;
+.output-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    background: transparent;
     border: none;
-    border-radius: 8px;
+    color: #858585;
     cursor: pointer;
-    background: #f1c40f;
-    color: #0d1117;
-    font-weight: bold;
-    transition: 0.3s;
-    box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);
-    font-family: monospace;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s;
 }
 
-button:hover {
-    background: #f39c12;
-    transform: scale(1.02);
+.btn-icon:hover {
+    background: #3e3e42;
+    color: #ffffff;
 }
 
-.table-container {
-    width: 90%;
-    max-width: 800px;
-    margin-top: 25px;
-    background: #161b22;
-    border-radius: 8px;
-    border: 1px solid #333;
-    padding: 15px;
-    text-align: left;
+.output-content {
+    flex: 1;
+    overflow: auto;
+    padding: 12px 15px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 
-.table-container h3 {
-    color: #f1c40f;
-    margin-bottom: 15px;
-    font-family: monospace;
-    text-align: center;
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
+.output-content.success {
+    color: #4ec9b0;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: monospace;
-    font-size: 14px;
+.output-content.error {
+    color: #f48771;
 }
 
-th {
-    background: #21262d;
-    color: #f1fa8c;
-    padding: 10px;
-    text-align: left;
-    border-bottom: 2px solid #444;
+.output-content.loading {
+    color: #ce9178;
 }
 
-td {
-    padding: 8px 10px;
-    border-bottom: 1px solid #2d333b;
-    color: #c9d1d9;
+/* Run Button */
+.run-button-container {
+    padding: 10px 15px;
+    background: #252526;
+    border-top: 1px solid #3e3e42;
+    display: flex;
+    gap: 8px;
 }
 
-/* Warna kolom Piton (Merah muda) */
-td:nth-child(2) {
-    color: #ff79c6;
-    font-weight: bold;
+.btn-run {
+    flex: 1;
+    padding: 10px 20px;
+    background: #007acc;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-/* Warna kolom Python (Hijau) */
-td:nth-child(3) {
-    color: #50fa7b;
+.btn-run:hover:not(:disabled) {
+    background: #005a9e;
 }
 
-tr:hover {
-    background: #1c2128;
+.btn-run:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.btn-run:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-clear {
+    padding: 10px 15px;
+    background: #3e3e42;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-clear:hover {
+    background: #555555;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #464647;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5a5a5a;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sidebar {
+        width: 250px;
+    }
 }
 
 @media (max-width: 600px) {
-    .CodeMirror {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
         height: 200px;
-        font-size: 13px;
+        border-right: none;
+        border-bottom: 1px solid #3e3e42;
     }
 
-    pre, table {
-        font-size: 12px;
-    }
-
-    table td, table th {
-        padding: 6px;
+    .output-container {
+        max-height: 200px;
     }
 }
 </style>
 </head>
 <body>
 
-<h2>𓆙Piton Archetype</h2>
-<div class="sub">Bahasa Pemrograman Indonesia 🇮🇩</div>
+<!-- Header -->
+<header>
+    <div class="header-title">
+        <span class="logo">🐍</span>
+        <span>Piton IDE</span>
+        <span style="font-size: 12px; color: #858585; margin-left: 10px;">Beta</span>
+    </div>
+    <div class="header-actions">
+        <div class="status-indicator" id="status">
+            <span class="dot"></span>
+            <span id="status-text">Loading...</span>
+        </div>
+    </div>
+</header>
 
-<div class="editor-container">
-    <textarea id="code">ketik("selamat menulis")</textarea>
-</div>
+<!-- Main Container -->
+<div class="main-container">
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-header">📖 Kamus Piton</div>
+            <div class="sidebar-content" id="kamus-list"></div>
+        </div>
+    </div>
 
-<button onclick="runPiton()">🚀 Jalankan</button>
-<pre id="output">⏳ Tunggu sebentar...</pre>
+    <!-- Editor Area -->
+    <div class="editor-area">
+        
+        <!-- Tabs -->
+        <div class="editor-tabs">
+            <button class="editor-tab active">
+                <span>📄</span>
+                <span>main.piton</span>
+            </button>
+        </div>
 
-<div class="table-container">
-    <h3>📖 Kamus Piton → Python</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Kategori</th>
-                <th>Piton</th>
-                <th>Python</th>
-            </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-    </table>
+        <!-- Editor -->
+        <div class="editor-container">
+            <textarea id="code">ketik("Selamat datang di Piton IDE!")
+ketik("Bahasa pemrograman Indonesia 🇮🇩")</textarea>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="output-container">
+            <div class="output-header">
+                <span>📤 OUTPUT TERMINAL</span>
+                <div class="output-controls">
+                    <button class="btn-icon" onclick="clearOutput()">🗑️</button>
+                </div>
+            </div>
+            <div class="output-content" id="output">⏳ Memuat Piton...</div>
+        </div>
+
+        <!-- Run Button -->
+        <div class="run-button-container">
+            <button class="btn-run" id="btn-run" onclick="runPiton()">
+                <span>▶</span>
+                <span>Jalankan (Ctrl+Enter)</span>
+            </button>
+            <button class="btn-clear" onclick="clearCode()">Bersihkan</button>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -315,14 +531,17 @@ const KAMUS_TABEL = [
     { kategori: "Special", piton: "__utama__", python: "__main__" }
 ];
 
-const tbody = document.getElementById('table-body');
-
+// Populate sidebar kamus
+const kamusList = document.getElementById('kamus-list');
 KAMUS_TABEL.forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td>${item.kategori}</td><td>${item.piton}</td><td>${item.python}</td>`;
-    tbody.appendChild(row);
+    const div = document.createElement('div');
+    div.className = 'kamus-item';
+    div.innerHTML = `<span class="kamus-piton">${item.piton}</span><span class="kamus-python">${item.python}</span>`;
+    div.onclick = () => insertCode(item.piton);
+    kamusList.appendChild(div);
 });
 
+// Create translation maps
 const MAP_IO = { 'ketik': 'print', 'terima': 'input', 'buka': 'open', 'tutup': 'close', 'baca': 'read', 'tulis_file': 'write' };
 const MAP_FUNC = { 'buat': 'def', 'kembalikan': 'return', 'wadah': 'class', 'anon': 'lambda', 'serahkan': 'yield' };
 const MAP_LOGIC = { 'jika': 'if', 'jikalau': 'elif', 'selain': 'else', 'pasti': 'assert' };
@@ -337,15 +556,16 @@ const MAP_MATH = { 'maks': 'max', 'min': 'min', 'total': 'sum', 'urut': 'sorted'
 const MAP_SPECIAL = { '__nama__': '__name__', '__utama__': '__main__' };
 const MAP = { ...MAP_IO, ...MAP_FUNC, ...MAP_LOGIC, ...MAP_LOOP, ...MAP_TYPES, ...MAP_BOOL, ...MAP_OP, ...MAP_IMPORT, ...MAP_ERROR, ...MAP_SCOPE, ...MAP_MATH, ...MAP_SPECIAL };
 
+// Initialize CodeMirror
 let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     mode: "python",
     theme: "material-darker",
     lineNumbers: true,
     indentUnit: 4,
-    matchBrackets: true
+    matchBrackets: true,
+    indentWithTabs: false,
+    tabSize: 4
 });
-
-editor.setValue(`ketik("selamat menulis")`);
 
 function ubahPitonKePython(kode) {
     let strings = [];
@@ -372,22 +592,69 @@ function ubahPitonKePython(kode) {
 
 let pyodide = null;
 
+// Initialize Pyodide
 setTimeout(async () => {
-    pyodide = await loadPyodide();
-    document.getElementById("output").textContent = "✅ Piton Siap!";
+    try {
+        pyodide = await loadPyodide();
+        updateStatus("Siap", "ready");
+        document.getElementById("output").textContent = "✅ Piton siap digunakan!";
+    } catch (e) {
+        updateStatus("Gagal memuat", "error");
+        document.getElementById("output").textContent = "❌ Gagal memuat Piton:\n" + e.toString();
+    }
 }, 1000);
 
+function updateStatus(text, type) {
+    const status = document.getElementById("status");
+    const statusText = document.getElementById("status-text");
+    
+    status.className = "status-indicator";
+    if (type === "loading") status.classList.add("loading");
+    if (type === "error") status.classList.add("error");
+    
+    statusText.textContent = text;
+}
+
+function insertCode(code) {
+    const pos = editor.getCursor();
+    editor.replaceRange(code + "()", pos);
+    editor.focus();
+}
+
+function clearOutput() {
+    document.getElementById("output").textContent = "";
+}
+
+function clearCode() {
+    if (confirm("Bersihkan semua kode?")) {
+        editor.setValue("");
+    }
+}
+
 async function runPiton() {
-    let output = document.getElementById("output");
+    const output = document.getElementById("output");
+    const btnRun = document.getElementById("btn-run");
 
     if (!pyodide) {
-        output.textContent = "⏳ Piton masih loading... (1 detik)";
+        output.textContent = "⏳ Piton masih loading...";
+        output.className = "output-content loading";
         return;
     }
 
+    btnRun.disabled = true;
     output.textContent = "⏳ Menjalankan...";
+    output.className = "output-content loading";
+    updateStatus("Menjalankan", "loading");
 
     let kodePiton = editor.getValue();
+    if (!kodePiton.trim()) {
+        output.textContent = "⚠️ Kode masih kosong. Tulis kode Piton terlebih dahulu!";
+        output.className = "output-content";
+        btnRun.disabled = false;
+        updateStatus("Siap", "ready");
+        return;
+    }
+
     let kodePython = ubahPitonKePython(kodePiton);
 
     try {
@@ -399,13 +666,28 @@ sys.stdout = StringIO()
 
         pyodide.runPython(kodePython);
 
-        let hasil = pyodide.runPython("sys.stdout.getvalue()") || "✔️ Selesai";
+        let hasil = pyodide.runPython("sys.stdout.getvalue()") || "✔️ Selesai (tidak ada output)";
 
         output.textContent = hasil;
+        output.className = "output-content success";
+        updateStatus("Berhasil", "ready");
     } catch (e) {
         output.textContent = "❌ ERROR:\n" + e.toString();
+        output.className = "output-content error";
+        updateStatus("Error", "error");
     }
+
+    btnRun.disabled = false;
 }
+
+// Keyboard shortcut: Ctrl+Enter to run
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runPiton();
+    }
+});
 </script>
+
 </body>
 </html>

@@ -148,6 +148,5 @@ Kamu bebas menggunakan, mengedit, dan menyebarkan kode ini.
 ---
 
 > **"Mulai dari yang kecil, kirim sesuatu."** — Piton IDE 🐍
->
-> **Credit**
-> no one have
+> 
+> **Dibuat oleh:** [Fathirthe-founder1](https://github.com/Fathirthe-founder1)

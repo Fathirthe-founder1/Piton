@@ -11,6 +11,6 @@ setup(
     },
     description='Bahasa Pemrograman Indonesia berbasis Python',
     author='Fathirthe-founder1',
-    url='https://github.com/Fathirthe-founder1/Piton',
+    url='https://github.com/Fathirthe-founder1/piton',
     python_requires='>=3.6',
 )

@@ -8,8 +8,9 @@ def translate(code):
         if b and not b.startswith('=') and not b.startswith('jika') and not b.startswith('selagi') and not b.startswith('buat'):
             if (b.startswith('"') and b.endswith('"')) or (b.startswith("'") and b.endswith("'")):
                 lines[i] = f'ketik({b})'
-            elif b.replace('.', '', 1).isdigit():
-                lines[i] = f'ketik({b})'
+            elif b.replace('.', '', 1).isdigit() or any(op in b for op in ['+', '-', '*', '/', '%']):
+                if '=' not in b:
+                    lines[i] = f'ketik({b})'
             elif b.endswith(';'):
                 lines[i] = f'ketik({b[:-1]})'
     code = '\n'.join(lines)
@@ -32,4 +33,4 @@ def translate(code):
 
 def run_piton(code):
     python_code = translate(code)
-    exec(python_code)
+    exec(python_code, {'__builtins__': __builtins__, 'print': print})

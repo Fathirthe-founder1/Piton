@@ -1,5 +1,5 @@
-from .core import translate, run_piton
+from .core import translate, run_pitonx
 from .cli import main
 
-run = run_piton
+run = run_pitonx
 translate = translate

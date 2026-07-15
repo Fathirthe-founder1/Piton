@@ -27,8 +27,8 @@ pitonx nama_file.px
 ### Melalui Library Python
 Gunakan fungsi `run` dari modul `pitonx` untuk mengeksekusi string kode:
 ```python
-import pitonx as px
-px.run('ketik("Halo dari PitonX!")')
+import pitonx
+run(ketik("Halo dari PitonX!"))
 ```
 
 ## 📖 Kamus PitonX → Python

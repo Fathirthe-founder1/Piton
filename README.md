@@ -148,7 +148,7 @@ PitonX tidak akan terwujud tanpa peran dari pihak-pihak berikut:
 |------|------------|
 | **Fathirthe-founder1**(gw)| Infrastruktur, cara kerja, sistem, logika penerjemahan, Mode Super Singkat, CLI, REPL, dan pengujian menyeluruh. |
 | **DeepSeek AI** | Penyusunan folder, penulisan kode, debugging, optimasi, dan dokumentasi teknis. |
-| **Komunitas Python Indonesia** | Sumber inspirasi dan semangat untuk terus berkembang. |
+| **Komunitas Coding Indonesia** | Sumber inspirasi dan semangat untuk terus berkembang. |
 
 ---
 

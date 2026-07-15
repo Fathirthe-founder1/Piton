@@ -67,7 +67,7 @@ Berikut adalah tabel padanan sintaksis lengkap dari PitonX ke Python standard:
 | | desimal | float |
 | | logika | bool |
 | | daftar | list |
-| | kamus | dict |
+| | peta | dict |
 | | panjang | len |
 | | jenis | type |
 | | rentang | range |
